@@ -1,0 +1,7 @@
+USAGE OF AI IN PROJECT
+
+1. Creating sample datasets
+2. Acting as a tutor, without providing code
+3. Always create own hypothesis regarding code architecture and design
+4. Create based on (3) code sample
+5. Check based on (3) and (4) code with chatGpt
