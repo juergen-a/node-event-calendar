@@ -1,4 +1,4 @@
-let allEvents = [
+export const allEvents = [
   {
     id: 1,
     teamHome: 'Lions',

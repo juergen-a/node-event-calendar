@@ -82,17 +82,17 @@ async function getNewEvents() {
     if (eventsToRender.length > 0) {
       renderEvent(eventsToRender);
 
-      // Push to eventsToDisplay
+      // Push to eventsToDisplay to update state
       eventsToDisplay.push(eventsToRender);
     }
     // Get DOM-Element where to render
     const container = document.getElementById('#eventList');
 
     // Render to DOM
-    function renderEvent(eventsToRender) {
+    function renderEvent(event) {
       const el = document.createElement('div');
       el.classList.add('event-card');
-      el.textContent = `${eventsToRender.month}/${eventsToRender.day}: ${eventsToRender.title}`;
+      el.textContent = `${event.month}/${event.day}: ${event.title}`;
       container.appendChild(el);
     }
 
@@ -104,4 +104,4 @@ async function getNewEvents() {
 
 // Refresh - button
 const btnRefresh = document.querySelector('#getNewEvents');
-btnRefresh.addEventListener('click', () => getNewEvents);
+btnRefresh.addEventListener('click', () => getNewEvents());

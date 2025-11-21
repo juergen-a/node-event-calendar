@@ -1,10 +1,9 @@
+// Get-request from fetch-all-events -> url entered into browser
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
-// Get-request from fetch-new-event -> push of update button
 // Callback function autorunning upon IncomingMessage
-
-function getNewEvents(req, res) {
+export function getStaticAdmin(req, res) {
   // GET-request - !ok
   if (req.method !== 'GET') {
     res.statusCode = 404;
@@ -12,9 +11,9 @@ function getNewEvents(req, res) {
   }
   // GET-request - ok
   // Get the file path of the static file to be served
-  let reqUrl = req.url === '/db' ? '/in-memory.js' : req.url;
+  let reqUrl = req.url === '/admin' ? '/index.html' : req.url;
 
-  let filePath = reqUrl;
+  let filePath = './frontend/client' + reqUrl;
 
   // Check if file exists
   fs.stat(filePath, (err, stats) => {
