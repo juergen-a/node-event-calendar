@@ -23,9 +23,6 @@ export function getStaticClient(req, res) {
       return res.end('404 Not Found');
     }
 
-    // Create readStream
-    const streamFile = fs.createReadStream(filePath);
-
     // Get extension of found & streamed file
     let ext = path.extname(filePath).slice(1);
     console.log('extension', ext);
@@ -47,11 +44,11 @@ export function getStaticClient(req, res) {
     const contentType = mimeType[ext];
 
     // Send the response header to the browser //
-    streamFile.on('open', () => {
-      res.statusCode = 200;
-      res.setHeader('Content-type', contentType);
-    });
+    res.statusCode = 200;
+    res.setHeader('Content-type', contentType);
 
+    // Create readStream
+    const streamFile = fs.createReadStream(filePath);
     // Stream the response body to the browser
     streamFile.pipe(res);
   });

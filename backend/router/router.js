@@ -5,13 +5,13 @@ import { postNewEvents } from '../api/post-new-events.js';
 
 export function router(req, res) {
   if (req.method === 'GET' && req.url === '/') {
-    getStaticClient(req, res);
+    return getStaticClient(req, res);
   } else if (req.method === 'GET' && req.url === '/db/in-memory.js') {
-    getNewEvents(req, res);
+    return getNewEvents(req, res);
   } else if (req.method === 'GET' && req.url === '/admin') {
-    getStaticAdmin(req, res);
+    return getStaticAdmin(req, res);
   } else if (req.method === 'POST' && req.url === '/db/in-memory.js') {
-    postNewEvents(req, res);
+    return postNewEvents(req, res);
   }
   res.statuscode = 404;
   res.end(`${res.statuscode}, Not Found`);

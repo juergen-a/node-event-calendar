@@ -13,7 +13,7 @@ export function getStaticAdmin(req, res) {
   // Get the file path of the static file to be served
   let reqUrl = req.url === '/admin' ? '/index.html' : req.url;
 
-  let filePath = './frontend/client' + reqUrl;
+  let filePath = './frontend/admin' + reqUrl;
 
   // Check if file exists
   fs.stat(filePath, (err, stats) => {
@@ -22,9 +22,6 @@ export function getStaticAdmin(req, res) {
       // Rank order of ending code regarding different files to be served
       return res.end('404 Not Found');
     }
-
-    // Create readStream
-    const streamFile = fs.createReadStream(filePath);
 
     // Get extension of found & streamed file
     let ext = path.extname(filePath).slice(1);
@@ -47,10 +44,11 @@ export function getStaticAdmin(req, res) {
     const contentType = mimeType[ext];
 
     // Send the response header to the browser //
-    streamFile.on('open', () => {
-      res.statusCode = 200;
-      res.setHeader('Content-type', contentType);
-    });
+    res.statusCode = 200;
+    res.setHeader('Content-type', contentType);
+
+    // Create readStream
+    const streamFile = fs.createReadStream(filePath);
 
     // Stream the response body to the browser
     streamFile.pipe(res);
