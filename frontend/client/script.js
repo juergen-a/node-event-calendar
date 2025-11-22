@@ -1,7 +1,6 @@
 // fetch-new-event
 // Render only new events by appending to div-flexbox (eventList)
 // Collapsible flexboxes - (eventList and calendar)
-console.log('script loaded');
 
 let allEvents = [
   {
@@ -68,10 +67,12 @@ async function getNewEvents() {
 
     // Compare if allEvents matches eventsToDisplay
     // Filter those elements (event objects) that do not match
-    const idsAllEvents = allEvents.map((eventCard) => eventCard.id);
+    const idsAllEvents = allEvents.map((eventDb) => eventDb.id);
     console.log('idsAllEvents', idsAllEvents);
 
-    const idsEventsToDisplay = eventsToDisplay.map((eventCard) => eventCard.id);
+    const idsEventsToDisplay = eventsToDisplay.map(
+      (eventDisplay) => eventDisplay.id,
+    );
     console.log('idsEventsToDisplay', idsEventsToDisplay);
 
     const missingInEventsToDisplay = allEvents.filter(
@@ -114,6 +115,23 @@ async function getNewEvents() {
       const eventCard = document.createElement('div');
       eventCard.classList.add('event-card');
       eventCard.textContent = `${event.teamHome}-${event.teamAway}, ${event.date}, ${event.time}, ${event.venue} `;
+      // Add bttn add
+      const btnAdd = document.createElement('button');
+      btnAdd.textContent = 'Add';
+      btnAdd.addEventListener('click', () => {
+        addToCalendar(event, eventCard);
+      });
+      eventCard.appendChild(btnAdd);
+
+      // Add bttn remove
+      const btnRemove = document.createElement('button');
+      btnRemove.textContent = 'Remove';
+      btnRemove.addEventListener('click', () => {
+        removeFromCalendar(event, eventCard);
+      });
+      eventCard.appendChild(btnRemove);
+
+      // Add eventCard to Container Event List
       container.appendChild(eventCard);
     }
 
@@ -121,6 +139,23 @@ async function getNewEvents() {
   } catch (error) {
     return { message: error.message };
   }
+}
+
+// Add to Calendar
+function addToCalendar(event, eventCard) {
+  const eventMonth = new Date(event.date).getMonth() + 1; // 1-12
+  const monthContainer = document.getElementById(`${eventMonth}`);
+
+  if (monthContainer) {
+    monthContainer.appendChild(eventCard);
+  }
+}
+
+// Remove from Calendar
+function removeFromCalendar(event, eventCard) {
+  eventCard.parentNode.removeChild(eventCard);
+  eventsToDisplay = eventsToDisplay.filter((e) => e.id !== event.id);
+  getNewEvents();
 }
 
 // Refresh - button
