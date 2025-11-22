@@ -1,6 +1,7 @@
 // fetch-new-event
 // Render only new events by appending to div-flexbox (eventList)
 // Collapsible flexboxes - (eventList and calendar)
+console.log('script loaded');
 
 let allEvents = [
   {
@@ -103,5 +104,10 @@ async function getNewEvents() {
 }
 
 // Refresh - button
+console.log('attaching event listener');
 const btnRefresh = document.querySelector('#getNewEvents');
-btnRefresh.addEventListener('click', () => getNewEvents());
+
+btnRefresh.addEventListener('click', () => {
+  console.log('attaching event listener');
+  getNewEvents();
+});
