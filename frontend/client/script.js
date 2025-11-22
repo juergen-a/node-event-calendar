@@ -56,45 +56,65 @@ async function getNewEvents() {
     if (!res.ok) {
       throw new Error(`Error, ${res.status}`);
     }
-    // Read the res-body
-    const data = await res.text();
+    // Read the res-body, parsing json to js array of objects
+    const data = await res.json();
 
     // Push allEvents to arrAllEvents for storage
-    allEvents.push(data);
+    data.forEach((enew) => {
+      if (!allEvents.some((ecurrent) => ecurrent.id === enew.id)) {
+        allEvents.push(enew);
+      }
+    });
 
     // Compare if allEvents matches eventsToDisplay
     // Filter those elements (event objects) that do not match
-    const idsAllEvents = allEvents.map((el) => el.id);
-    const idsEventsToDisplay = eventsToDisplay.map((el) => el.id);
+    const idsAllEvents = allEvents.map((eventCard) => eventCard.id);
+    console.log('idsAllEvents', idsAllEvents);
+
+    const idsEventsToDisplay = eventsToDisplay.map((eventCard) => eventCard.id);
+    console.log('idsEventsToDisplay', idsEventsToDisplay);
 
     const missingInEventsToDisplay = allEvents.filter(
-      (el) => !idsEventsToDisplay.includes(el.id),
+      (eventCard) => !idsEventsToDisplay.includes(eventCard.id),
     );
+    console.log('missingInEventsToDisplay', missingInEventsToDisplay);
+
     const missingInAllEvents = eventsToDisplay.filter(
-      (el) => !idsAllEvents.includes(el.id),
+      (eventCard) => !idsAllEvents.includes(eventCard.id),
     );
+    console.log('missingInAllEvents', missingInAllEvents);
 
     const eventsToRender =
       missingInEventsToDisplay.length > 0
         ? missingInEventsToDisplay
         : missingInAllEvents;
+    console.log('eventsToRender', eventsToRender);
+
+    // Get DOM-Element where to render
+    const container = document.querySelector('#eventList');
 
     // Render events that are missing
     if (eventsToRender.length > 0) {
-      renderEvent(eventsToRender);
+      eventsToRender.forEach((eMissing) => {
+        renderEvent(eMissing);
+      });
 
-      // Push to eventsToDisplay to update state
-      eventsToDisplay.push(eventsToRender);
+      // Push to eventsToDisplay to update state - new array
+      const idsToUpdate = eventsToDisplay.map((el) => el.id);
+
+      const elToUpdate = eventsToRender.filter(
+        (el) => !idsToUpdate.includes(el.id),
+      );
+
+      eventsToDisplay.push(...elToUpdate);
     }
-    // Get DOM-Element where to render
-    const container = document.getElementById('#eventList');
 
     // Render to DOM
     function renderEvent(event) {
-      const el = document.createElement('div');
-      el.classList.add('event-card');
-      el.textContent = `${event.month}/${event.day}: ${event.title}`;
-      container.appendChild(el);
+      const eventCard = document.createElement('div');
+      eventCard.classList.add('event-card');
+      eventCard.textContent = `${event.teamHome}-${event.teamAway}, ${event.date}, ${event.time}, ${event.venue} `;
+      container.appendChild(eventCard);
     }
 
     // Catching network, connection and parsing errors
