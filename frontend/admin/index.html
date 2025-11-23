@@ -5,13 +5,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin-Panel</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/admin/styles.css" />
+    <link rel="shortcut icon" href="/admin/favicon.ico" type="image/x-icon" />
   </head>
 
   <body>
     <div>Admin dashboard</div>
     <div>Enter new events</div>
-    <script src="script.js"></script>
+    <form id="eventForm">
+      <input name="teamHome" placeholder="Home Team" required /><br /><br />
+      <input name="teamAway" placeholder="Away Team" required /><br /><br />
+      <input type="date" name="date" required /><br /><br />
+      <input type="time" name="time" required /><br /><br />
+      <input name="venue" placeholder="Venue" required /><br /><br />
+
+      <button type="submit">Add Event</button>
+    </form>
+    <script src="/admin/script.js"></script>
   </body>
 </html>

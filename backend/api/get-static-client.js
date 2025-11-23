@@ -11,7 +11,7 @@ export function getStaticClient(req, res) {
   }
   // GET-request - ok
   // Get the file path of the static file to be served
-  let reqUrl = req.url === '/' ? '/index.html' : req.url;
+  let reqUrl = req.url === '/' ? '/index.html' : req.url.replace('/client', '');
 
   let filePath = './frontend/client' + reqUrl;
 

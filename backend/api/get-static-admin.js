@@ -11,7 +11,8 @@ export function getStaticAdmin(req, res) {
   }
   // GET-request - ok
   // Get the file path of the static file to be served
-  let reqUrl = req.url === '/admin' ? '/index.html' : req.url;
+  let reqUrl =
+    req.url === '/admin' ? '/index.html' : req.url.replace('/admin', '');
 
   let filePath = './frontend/admin' + reqUrl;
 

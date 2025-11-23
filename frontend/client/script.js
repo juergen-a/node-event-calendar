@@ -2,43 +2,9 @@
 // Render only new events by appending to div-flexbox (eventList)
 // Collapsible flexboxes - (eventList and calendar)
 
-let allEvents = [
-  {
-    id: 1,
-    teamHome: 'Lions',
-    teamAway: 'Pistons',
-    date: '2025-02-14',
-    time: '14:15:00',
-    venue: 'Pistons Stadium',
-  },
-  {
-    id: 2,
-    teamHome: 'Falcons',
-    teamAway: 'Warriors',
-    date: '2025-05-09',
-    time: '09:30:00',
-    venue: 'Falcon Arena',
-  },
-  {
-    id: 3,
-    teamHome: 'Tigers',
-    teamAway: 'Sharks',
-    date: '2025-11-22',
-    time: '19:45:00',
-    venue: 'Shark Dome',
-  },
-];
+let allEvents = [];
 
-let eventsToDisplay = [
-  {
-    id: 1,
-    teamHome: 'Lions',
-    teamAway: 'Pistons',
-    date: '2025-02-14',
-    time: '14:15:00',
-    venue: 'Pistons Stadium',
-  },
-];
+let eventsToDisplay = [];
 
 const url = '/db/in-memory.js';
 
@@ -48,6 +14,36 @@ const options = {
   // add abort signal w/ timeout
 };
 
+// Pre-populate allEvents and eventsToDisplay on page load
+window.addEventListener('load', () => {
+  getAllEvents();
+});
+
+// Fetch - API-call upon page-load
+async function getAllEvents() {
+  const res = await fetch(url, options);
+
+  if (!res.ok) {
+    throw new Error(`Error, ${res.status}`);
+  }
+
+  const data = await res.json();
+  allEvents.push(...data);
+  eventsToDisplay.push(...data);
+
+  console.log('Fetched data:', data);
+  console.log('allEvents now:', allEvents);
+  console.log('eventsToDisplay now:', eventsToDisplay);
+
+  // Render eventsToDisplay
+  if (eventsToDisplay.length > 0) {
+    eventsToDisplay.forEach((el) => {
+      renderEvent(el);
+    });
+  }
+}
+
+// Fetch - API-call upon pushing refresh button
 async function getNewEvents() {
   try {
     const res = await fetch(url, options);
@@ -91,10 +87,7 @@ async function getNewEvents() {
         : missingInAllEvents;
     console.log('eventsToRender', eventsToRender);
 
-    // Get DOM-Element where to render
-    const container = document.querySelector('#eventList');
-
-    // Render events that are missing
+    // Render events that are missing - set reference via Closure to storage outside the outer function
     if (eventsToRender.length > 0) {
       eventsToRender.forEach((eMissing) => {
         renderEvent(eMissing);
@@ -110,35 +103,47 @@ async function getNewEvents() {
       eventsToDisplay.push(...elToUpdate);
     }
 
-    // Render to DOM
-    function renderEvent(event) {
-      const eventCard = document.createElement('div');
-      eventCard.classList.add('event-card');
-      eventCard.textContent = `${event.teamHome}-${event.teamAway}, ${event.date}, ${event.time}, ${event.venue} `;
-      // Add bttn add
-      const btnAdd = document.createElement('button');
-      btnAdd.textContent = 'Add';
-      btnAdd.addEventListener('click', () => {
-        addToCalendar(event, eventCard);
-      });
-      eventCard.appendChild(btnAdd);
-
-      // Add bttn remove
-      const btnRemove = document.createElement('button');
-      btnRemove.textContent = 'Remove';
-      btnRemove.addEventListener('click', () => {
-        removeFromCalendar(event, eventCard);
-      });
-      eventCard.appendChild(btnRemove);
-
-      // Add eventCard to Container Event List
-      container.appendChild(eventCard);
-    }
-
     // Catching network, connection and parsing errors
   } catch (error) {
     return { message: error.message };
   }
+}
+
+// Render to DOM
+function renderEvent(event) {
+  // Get DOM-Element where to render
+  const container = document.querySelector('#eventList');
+
+  const eventCard = document.createElement('div');
+  eventCard.classList.add('event-card');
+  eventCard.textContent = `${event.teamHome}-${event.teamAway}, ${event.date}, ${event.time}, ${event.venue} `;
+
+  // Add bttn Add && bttn Remove
+  // Create buttons
+  const btnAdd = document.createElement('button');
+  btnAdd.textContent = 'Add';
+
+  const btnRemove = document.createElement('button');
+  btnRemove.textContent = 'Remove';
+  btnRemove.style.display = 'none';
+
+  // Add bttn behavior
+  btnAdd.addEventListener('click', () => {
+    addToCalendar(event, eventCard);
+    btnAdd.style.display = 'none';
+    btnRemove.style.display = 'inline-block';
+  });
+
+  btnRemove.addEventListener('click', () => {
+    removeFromCalendar(event, eventCard);
+  });
+
+  // Add buttons to eventCard
+  eventCard.appendChild(btnAdd);
+  eventCard.appendChild(btnRemove);
+
+  // Add eventCard to Container Event List
+  container.appendChild(eventCard);
 }
 
 // Add to Calendar

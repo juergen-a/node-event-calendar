@@ -4,13 +4,18 @@ import { getStaticClient } from '../api/get-static-client.js';
 import { postNewEvents } from '../api/post-new-events.js';
 
 export function router(req, res) {
-  const staticFilesClient = ['/', '/script.js', '/styles.css', '/favicon.ico'];
+  const staticFilesClient = [
+    '/',
+    '/client/script.js',
+    '/client/styles.css',
+    '/client/favicon.ico',
+  ];
 
   const staticFilesAdmin = [
     '/admin',
-    '/script.js',
-    '/styles.css',
-    '/favicon.ico',
+    '/admin/script.js',
+    '/admin/styles.css',
+    '/admin/favicon.ico',
   ];
 
   if (req.method === 'GET' && staticFilesClient.includes(req.url)) {
